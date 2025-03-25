@@ -1,0 +1,50 @@
+-- #popclip
+-- name: SaveToTBX2
+-- icon: symbol:shippingbox
+-- language: applescript
+
+use AppleScript version "2.4" -- Yosemite (10.10) or later
+use scripting additions
+
+-- set this to the name of your Tinderbox file
+set targetTinderboxFile to "WorkingMemory"
+set notesPath to (path to documents folder as text) & targetTinderboxFile & ".tbx"
+
+tell application "System Events"
+	set fileExists to exists file notesPath
+end tell
+
+set appName to "{popclip app Name}"
+set sourceUrl to "{popclip browser url}"
+set docName to "{popclip browser title}"
+
+if docName is "" then
+	set docName to "Document"
+end if
+
+tell application "Tinderbox 10"
+	activate
+	if fileExists then
+		-- If the file exists
+		open file notesPath
+		activate
+	else
+		-- Then open the newly created file in TinderBox 10
+		set myNewDocument to make new document with properties {name: targetTinderboxFile}
+		save myNewDocument in POSIX path of notesPath
+		
+	end if
+	
+	tell front document
+		set timestamp to do shell script "date '+%Y-%m-%d %H:%M:%S'"
+		set myNewNote to make new note with properties {name:docName & " - " & timestamp}
+		tell myNewNote
+			set text of myNewNote to "{popclip text}"
+			set value of (attribute named "Badge") to "document2"
+			set value of (attribute named "SourceURL") to sourceUrl
+			set value of (attribute named "DisplayedAttributes") to "SourceURL;" & value of (attribute named "DisplayedAttributes")
+		end tell
+		save
+	end tell
+	
+end tell
