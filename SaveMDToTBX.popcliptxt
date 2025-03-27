@@ -1,7 +1,8 @@
 -- #popclip
--- name: SaveToTBX
+-- name: SaveMDToTBX
 -- icon: symbol:shippingbox
 -- language: applescript
+-- capture html: true
 
 use AppleScript version "2.4" -- Yosemite (10.10) or later
 use scripting additions
@@ -39,7 +40,7 @@ tell application "Tinderbox 10"
 		set timestamp to do shell script "date '+%Y-%m-%d %H:%M:%S'"
 		set myNewNote to make new note with properties {name:docName & " - " & timestamp}
 		tell myNewNote
-			set text of myNewNote to "{popclip text}"
+			set text of myNewNote to "{popclip markdown}"
 			set value of (attribute named "Badge") to "document2"
 			set value of (attribute named "SourceURL") to sourceUrl
 			set value of (attribute named "DisplayedAttributes") to "SourceURL;" & value of (attribute named "DisplayedAttributes")
